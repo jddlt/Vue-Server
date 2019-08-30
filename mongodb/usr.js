@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 // 连接mongodb
 mongoose.connect('mongodb://47.102.218.8/user', {
@@ -9,7 +10,12 @@ mongoose.connect('mongodb://47.102.218.8/user', {
 var UserSchema = new mongoose.Schema({
   name: String, 
   emil: String,
-  password: String
+  password: {
+    type: String,
+    set(val) {
+      return bcrypt.hashSync(val,12);
+    }
+  }
 });
 const userModel = mongoose.model('user', UserSchema);
 
