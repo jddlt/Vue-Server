@@ -5,6 +5,7 @@ const userModel = require('./mongodb/usr')
 
 // app.static(path.resolve(__dirname, './dist'))
 
+
 app.listen(3000, () => {
   console.log('服务器启动成功');
 })
@@ -19,21 +20,24 @@ app.all('*', function (req, res, next) {
   next();
 });
 
-app.post('/login', (req, res) => {
-  const findName = new Promise((resolve, reject) => {
-    userModel.find({
-      name: params.name
-    }, (err, msg) => {
-      if (err) {
-        reject('未知错误')
-      } else {
-        if(msg.length) {
-          reject('昵称已重复')
-        } else {
-          resolve()
+app.post('/login', async (req, res) => {
+  const params = await postParams(req);
+  userModel.find({
+    emil: params.emil
+  }, (err, msg) => {
+    if (err) {
+      res.status(500).send({ error: '服务器错误' }) 
+    } else {
+      if(msg.length) {
+        if(msg[0].password === params.password) {
+          res.status(200).send({ data: '登陆成功' }) 
+        }else{
+          res.status(400).send({ error: '密码错误' }) 
         }
+      } else {
+        res.status(400).send({ error: '该邮箱暂未注册' }) 
       }
-    })
+    }
   })
 })
 
@@ -82,7 +86,7 @@ app.post('/addUser', async (req, res) => {
         res.status(500).send({ error: '未知错误' }) 
         return
       }
-      res.status(200).send({ msg: '创建成功' }) 
+      res.status(200).send({ data: '创建成功' }) 
     })
   }).catch(err => {
     res.status(400).send({ error: err }) 
