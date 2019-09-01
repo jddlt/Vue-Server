@@ -7,6 +7,7 @@ module.exports =  function postParams(req) {
       str += data;
     })
     req.on("end", function () {
+      if (str == '') {resolve(str)}
       var post = querystring.parse(str);
       resolve(post)
     })
