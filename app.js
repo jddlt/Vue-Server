@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express()
 const postParams = require('./util/postParams')
-const userModel = require('./mongodb/usr')
+const { userModel, articalModel } = require('./mongodb/usr')
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt")
 const { mySend, myError } = require('./util/send')
@@ -60,6 +60,92 @@ app.use(async function (req, res, next) {
     }
   }
 })
+
+
+app.get('/sendArtical', async (req, res) => {
+  const { title, content } = req.query;
+  articalModel.create({
+    title,
+    content,
+    _id: app.get('_id')
+  }, err => {
+    if (err) {
+      myError(res) 
+      return
+    }
+    mySend(res, { msg: '发贴成功' }) 
+  })
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.get('/userInfo', async (req, res) => {
   const params = req.query;

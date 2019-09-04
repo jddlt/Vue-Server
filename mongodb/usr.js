@@ -7,7 +7,7 @@ mongoose.connect('mongodb://47.102.218.8/user', {
   socketTimeoutMS: 10000
 });
 
-var UserSchema = new mongoose.Schema({
+let UserSchema = new mongoose.Schema({
   name: String, 
   emil: String,
   password: {
@@ -17,7 +17,15 @@ var UserSchema = new mongoose.Schema({
     }
   }
 });
+let ArticalSchema = new mongoose.Schema({
+  title: String, 
+  content: String,
+  _id: String
+});
+
+
 const userModel = mongoose.model('user', UserSchema);
+const articalModel = mongoose.model('artical', ArticalSchema);
 
 const db = mongoose.connection;
 
@@ -29,4 +37,7 @@ db.once('open', function callback() { //监听一次打开
     console.log('数据库连接成功');
 });
  
-module.exports = userModel;
+module.exports = {
+  userModel,
+  articalModel
+};
