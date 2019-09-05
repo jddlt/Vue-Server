@@ -20,6 +20,7 @@ module.exports = function (app) {
                 myError(res, err)
               } else {
                 if(msg.length) {
+                  app.set('userInfo', {name: msg[0].name, emil: msg[0].emil})
                   mySend(res, { data: { name: msg[0].name, emil: msg[0].emil } })
                 } else {
                   mySend(res, { msg: '该用户不存在', code: 200 })

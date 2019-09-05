@@ -25,7 +25,7 @@ let ArticalSchema = new mongoose.Schema({
   likes: Number,
   collect: Number,
   answer: Array,
-  answer_num: Number
+  create_time: String
 });
 
 

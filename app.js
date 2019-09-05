@@ -1,11 +1,16 @@
 const express = require('express');
+const path = require('path');
 const app = express()
 const postParams = require('./util/postParams')
 const jwt = require("jsonwebtoken");
 const { mySend, myError } = require('./util/send')
+const { userModel, articalModel } = require('./mongodb/usr')
 const routs = require('./routes')
 
-// app.static(path.resolve(__dirname, './dist'))
+
+app.use(express.static(path.resolve(__dirname, './dist')));
+
+
 const notNeedLoginPath = ['/login', '/addUser', '/userInfo', '/artical']
 
 app.listen(3000, () => {
@@ -15,6 +20,7 @@ app.listen(3000, () => {
 app.set('secret', 'jddlt')
 app.set('_id', '')
 app.set('params', '')
+app.set('userInfo', {})
 
 
 //设置允许跨域访问该服务.  //wocao 放前面 md
@@ -47,7 +53,14 @@ app.use(async function (req, res, next) {
         } else {
           if (decode.id) {
             app.set('_id', decode.id)
-            next();
+            userModel.findOne({_id: decode.id}, (err, res) => {
+              if(err) {
+                myError(res, err)
+                return
+              }
+              app.set('userInfo', {name: res.name, emil: res.emil}) 
+              next();
+            })
           } else {
             mySend(res, { msg: '登录信息已失效', code: 401 })
           }

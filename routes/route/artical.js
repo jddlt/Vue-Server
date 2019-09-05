@@ -2,7 +2,6 @@ const postParams = require('../../util/postParams')
 const { userModel, articalModel } = require('../../mongodb/usr')
 const { mySend, myError } = require('../../util/send')
 
-
 module.exports = function (app) {
 
     // 发帖子接口
@@ -14,8 +13,8 @@ module.exports = function (app) {
             likes: 0,
             answer: [],
             collect: 0,
-            answer_num: 0,
             id: app.get('_id'),
+            create_time: new Date().getTime(),
             author: JSON.parse(author)
         }, err => {
             if (err) {
@@ -29,13 +28,29 @@ module.exports = function (app) {
     // 获取帖子
     app.get('/artical', async (req, res) => {
         // const { title, content, author } = req.query;
-        articalModel.find({}, (err, msg) => {
+        articalModel.find({}, null, {sort: {'_id': -1}}, (err, msg) => {
             if (err) {
                 myError(res, err)
                 return
             }
             mySend(res, { msg: '获取成功', data: msg })
         })
+    })
+
+    // 回复帖子
+    app.get('/artical/reply', async (req, res) => {
+        const { _id, content } = req.query;
+        articalModel.updateOne({_id}, {'$push' : {answer: {
+            user_info: app.get('userInfo'),
+            content,
+            time: new Date().getTime()
+        }}}, (err, msg) => {
+            if (err) {
+                myError(res, err)
+                return
+            }
+            mySend(res,{ msg: '评论成功' })
+        });
     })
 
 }
