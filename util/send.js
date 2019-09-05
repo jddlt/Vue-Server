@@ -14,6 +14,6 @@ exports.mySend = function (res, option) {
         throw new Error('sen函数传参需要是对象')
     }
 }
-exports.myError = function(res){
-    res.status(500).send({code: 500, msg: '服务器错误', data: {} })
+exports.myError = function(res, err){
+    res.status(500).send({code: 500, msg: `服务器错误`, data: {}, errMsg: err})
 }

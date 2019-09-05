@@ -20,7 +20,12 @@ let UserSchema = new mongoose.Schema({
 let ArticalSchema = new mongoose.Schema({
   title: String, 
   content: String,
-  _id: String
+  author: Object,
+  id: String,
+  likes: Number,
+  collect: Number,
+  answer: Array,
+  answer_num: Number
 });
 
 
