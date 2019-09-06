@@ -16,7 +16,7 @@ const mySend = sendWays.mySend,
 app.use(express.static(path.resolve(__dirname, './dist')));
 
 
-const notNeedLoginPath = ['/login', '/addUser', '/userInfo', '/artical']
+const notNeedLoginPath = ['/login', '/addUser', '/userInfo', '/artical', '/upload']
 
 app.listen(3000, () => {
   console.log('服务器启动成功');
