@@ -33,7 +33,7 @@ module.exports = function (app) {
                 myError(res, err)
                 return
             }
-            mySend(res, { msg: '获取成功', data: msg })
+            mySend(res, { msg: '获取成功', data: msg }) 
         })
     })
 
