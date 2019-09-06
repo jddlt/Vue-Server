@@ -3,14 +3,9 @@ const path = require('path');
 const app = express()
 const postParams = require('./util/postParams')
 const jwt = require("jsonwebtoken");
-const sendWays = require('./util/send')
-const model = require('./mongodb/usr')
+const { mySend, myError } = require('./util/send')
+const { userModel, articalModel } = require('./mongodb/usr')
 const routs = require('./routes')
-const mySend = sendWays.mySend,
-      myError = sendWays.myError,
-      userModel = model.userModel,
-      articalModel =  model.articalModel
-
 
 
 app.use(express.static(path.resolve(__dirname, './dist')));
