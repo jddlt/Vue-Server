@@ -11,7 +11,7 @@ const routs = require('./routes')
 app.use(express.static(path.resolve(__dirname, './dist')));
 
 
-const notNeedLoginPath = ['/login', '/addUser', '/userInfo', '/artical', '/upload']
+const notNeedLoginPath = ['/login', '/addUser', '/userInfo', '/artical']
 
 app.listen(3000, () => {
   console.log('服务器启动成功');
