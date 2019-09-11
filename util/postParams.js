@@ -6,14 +6,10 @@ module.exports =  function postParams(req) {
     req.on("data", function (data) {
       str += data;
     })
-    req.on("end", function () {
-      console.log(456456465)
+    req.on("end", function () { 
       if (str == '') {resolve(str)}
       var post = querystring.parse(str);
-      console.log(66666666666)
       resolve(post)
-      reject(post)
-      console.log(7777777)
     })
   })
-}
+} 

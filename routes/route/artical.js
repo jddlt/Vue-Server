@@ -11,7 +11,7 @@ module.exports = function (app) {
             title,
             content,
             likes: 0,
-            answer: [],
+            answer: [], 
             collect: 0,
             id: app.get('_id'),
             create_time: new Date().getTime(),
