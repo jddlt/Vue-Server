@@ -10,7 +10,7 @@ mongoose.connect('mongodb://47.102.218.8/user', {
 let UserSchema = new mongoose.Schema({
   name: String, 
   emil: String,
-  vavtar: {
+  avatar: {
     type: String,
     default: ''
   },

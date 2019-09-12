@@ -21,6 +21,7 @@ app.set('secret', 'jddlt')
 app.set('_id', '')
 app.set('params', '')
 app.set('userInfo', {})
+app.set('host', 'http://img.mrpzx.cn/')
 
 
 //设置允许跨域访问该服务.  //wocao 放前面 md
@@ -42,8 +43,9 @@ app.use(async function (req, res, next) {
   } else if (req.method == 'POST') {
     params = await postParams(req) || {};
   }
+  app.set('params', params) // 取参数都用 const params = app.get('params') 来取
   if (notNeedLoginPath.includes(req.url.split('?')[0])) {
-    if (req.method == 'POST') { app.set('params', params) }
+    // if (req.method == 'POST') { app.set('params', params) }
     next();
   } else {
     if (params.token) {
@@ -52,13 +54,13 @@ app.use(async function (req, res, next) {
           mySend(res, { msg: '登录信息已失效', code: 401 })
         } else {
           if (decode.id) {
-            app.set('_id', decode.id)
+            app.set('_id', decode.id) // 如何用户为有效token 则_id有值
             userModel.findOne({_id: decode.id}, (err, res) => {
               if(err) {
                 myError(res, err)
                 return
               }
-              app.set('userInfo', {name: res.name, emil: res.emil}) 
+              app.set('userInfo', {name: res.name, emil: res.emil, avatar: res.avatar, _id: res._id}) 
               next();
             })
           } else {

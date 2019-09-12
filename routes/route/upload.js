@@ -1,13 +1,38 @@
 const fs = require('fs');
 const path = require('path');
-const qiniu = require('qiniu')
-// const { ak, sk, host, bucket } = require('./upload.config')
+const postParams = require('./../../util/postParams')
 const { mySend, myError } = require('./../../util/send')
 const { userModel, articalModel } = require('../../mongodb/usr')
  
-const host = 'http://pxo628kfn.bkt.clouddn.com/'
 
-// 七牛云配置
+
+
+module.exports = function (app) {
+  const host = app.get('host')
+  app.post('/upload',  async function ( req, res, next ) {
+    const _id = app.get('_id')
+    const params = app.get('params')
+    userModel.updateOne({_id}, {'$set': { 'avatar': (host + params.key) }},  (err, msg) => {
+        if (err) {
+            myError(res, err)
+            return
+        }
+        mySend(res,{ msg: '修改成功' })
+    });
+  });
+}
+
+ 
+
+
+
+
+
+
+// 七牛云配置 (以后可能会有用)
+
+// const qiniu = require('qiniu')
+// const { ak, sk, host, bucket } = require('./upload.config')
 
 // const mac = new qiniu.auth.digest.Mac(ak, sk);
 // const options = {
@@ -19,22 +44,3 @@ const host = 'http://pxo628kfn.bkt.clouddn.com/'
 // config.zone = qiniu.zone.Zone_z0;
 // config.useHttpsDomain = true;
 // config.useCdnDomain = true;
-
-
-module.exports = function (app) {
-  app.post('/upload',  async function ( req, res, next ) {
-    const params = app.get('params')
-    const _id = app.get('_id')
-    console.log(_id);
-    
-    userModel.updateOne({_id}, {avatar: host + params.hash}, {upsert: true, new: true, setDefaultsOnInsert: true}, (err, msg) => {
-        if (err) {
-            myError(res, err)
-            return
-        }
-        mySend(res,{ msg: '修改成功' })
-    });
-  });
-}
-
- 

@@ -4,7 +4,9 @@ const postParams = require('../../util/postParams')
 const { userModel, articalModel } = require('../../mongodb/usr')
 const { mySend, myError } = require('../../util/send')
 
+
 module.exports = function (app) {
+  const host = app.get('host')
   app.get('/userInfo', async (req, res) => {
     const params = req.query;
     if (params.token) {
@@ -20,8 +22,8 @@ module.exports = function (app) {
                 myError(res, err)
               } else {
                 if(msg.length) {
-                  app.set('userInfo', {name: msg[0].name, emil: msg[0].emil})
-                  mySend(res, { data: { name: msg[0].name, emil: msg[0].emil } })
+                  app.set('userInfo', {name: msg[0].name, emil: msg[0].emil, avatar: msg[0].avatar, _id: msg[0]._id})
+                  mySend(res, { data: { name: msg[0].name, emil: msg[0].emil, avatar: msg[0].avatar, _id: msg[0]._id } })
                 } else {
                   mySend(res, { msg: '该用户不存在', code: 200 })
                 }
@@ -98,7 +100,8 @@ module.exports = function (app) {
       userModel.create({
         name: params.name,
         emil: params.emil,
-        password: params.password
+        password: params.password,
+        avatar: host + 'no-avatar-' + Math.ceil(Math.random() * 2)
       }, err => {
         if (err) {
           myError(res, err) 
