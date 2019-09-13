@@ -21,7 +21,7 @@ app.set('secret', 'jddlt')
 app.set('_id', '')
 app.set('params', '')
 app.set('userInfo', {})
-app.set('host', 'http://img.mrpzx.cn/')
+app.set('host', 'https://img.mrpzx.cn/')
 
 
 //设置允许跨域访问该服务.  //wocao 放前面 md
