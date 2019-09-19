@@ -37,6 +37,17 @@ module.exports = function (app) {
         })
     })
 
+    app.get('/artical/detail', async (req, res) => {
+        const { _id } = req.query;
+        articalModel.findOne({_id}, (err, msg) => {
+            if (err) {
+                myError(res, err)
+                return
+            }
+            mySend(res,{ msg: '评论成功', data: msg })
+        });
+    })
+
     // 回复帖子
     app.get('/artical/reply', async (req, res) => {
         const { _id, content } = req.query;
