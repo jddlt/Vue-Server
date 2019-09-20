@@ -7,6 +7,8 @@ const { mySend, myError } = require('../../util/send')
 
 module.exports = function (app) {
   const host = app.get('host')
+
+  // 获取用户信息
   app.get('/userInfo', async (req, res) => {
     const params = req.query;
     if (params.token) {
@@ -22,8 +24,8 @@ module.exports = function (app) {
                 myError(res, err)
               } else {
                 if(msg.length) {
-                  app.set('userInfo', {name: msg[0].name, emil: msg[0].emil, avatar: msg[0].avatar, _id: msg[0]._id})
-                  mySend(res, { data: { name: msg[0].name, emil: msg[0].emil, avatar: msg[0].avatar, _id: msg[0]._id } })
+                  app.set('userInfo', {...msg[0]._doc})
+                  mySend(res, { data: { ...msg[0]._doc }, msg: '获取成功' })
                 } else {
                   mySend(res, { msg: '该用户不存在', code: 200 })
                 }
@@ -40,6 +42,7 @@ module.exports = function (app) {
     }
   })
   
+  // 登录
   app.post('/login', async (req, res) => {
     const params = app.get('params')
     userModel.find({
@@ -63,7 +66,27 @@ module.exports = function (app) {
       }
     })
   })
+
+  // 编辑用户信息
+  app.post('/editUserInfo', async (req, res) => {
+    // const params = app.get('params')
+    const { name, emil, sex, label, tips, _id } = app.get('params')
+    userModel.updateOne({_id}, {'$set': { 
+      'name': name,
+      'emil': emil,
+      'sex': sex,
+      'label': label,
+      'tips': tips
+    }},  (err, msg) => {
+      if (err) {
+          myError(res, err)
+          return
+      }
+      mySend(res,{ msg: '修改成功' })
+  });
+  })
   
+  // 注册
   app.post('/addUser', async (req, res) => {
     const params = app.get('params')
     const findName = new Promise((resolve, reject) => {

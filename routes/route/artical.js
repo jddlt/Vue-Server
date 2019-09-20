@@ -5,8 +5,8 @@ const { mySend, myError } = require('../../util/send')
 module.exports = function (app) {
 
     // 发帖子接口
-    app.get('/artical/sendArtical', async (req, res) => {
-        const { title, content, author } = req.query;
+    app.post('/artical/sendArtical', async (req, res) => {
+        const { title, content, author } = app.get('params');
         articalModel.create({
             title,
             content,
@@ -37,6 +37,25 @@ module.exports = function (app) {
         })
     })
 
+    app.get('/artical/sort', async (req, res) => {
+        // const { title, content, author } = req.query;
+        // articalModel.find({}, null, {sort: {'_id': -1}}, (err, msg) => {
+        //     if (err) {
+        //         myError(res, err)
+        //         return
+        //     }
+        //     mySend(res, { msg: '获取成功', data: msg }) 
+        // })
+        articalModel.find({}).limit(10).sort({'_id': -1}).exec((err, msg) => {
+            if (err) {
+                myError(res, err)
+                return
+            }
+            mySend(res, { msg: '获取成功', data: msg }) 
+        })
+    })
+
+    // 获取帖子详情
     app.get('/artical/detail', async (req, res) => {
         const { _id } = req.query;
         articalModel.findOne({_id}, (err, msg) => {

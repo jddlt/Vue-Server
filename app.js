@@ -11,7 +11,7 @@ const routs = require('./routes')
 app.use(express.static(path.resolve(__dirname, './dist')));
 
 
-const notNeedLoginPath = ['/login', '/addUser', '/userInfo', '/artical']
+const notNeedLoginPath = ['/login', '/addUser', '/userInfo', '/artical', '/artical/sort', '/artical/detail']
 
 app.listen(3000, () => {
   console.log('服务器启动成功');
@@ -60,7 +60,8 @@ app.use(async function (req, res, next) {
                 myError(res, err)
                 return
               }
-              app.set('userInfo', {name: res.name, emil: res.emil, avatar: res.avatar, _id: res._id}) 
+              console.log('res', res);
+              app.set('userInfo', res) 
               next();
             })
           } else {
