@@ -1,12 +1,16 @@
 exports.mySend = function (res, option) {
     if (Object.prototype.toString.call(option) === '[object Object]') {
-        let {status, code, data, msg} = option
+        let {status, code, data, msg, total} = option
         if(res) {
             status = status ? status : 200;
             code = code ? code : 200;
             data = data ? data : {};
-            msg = msg ? msg : ''
-            res.status(status).send({code, msg, data})
+            msg = msg ? msg : '';
+            if (total) {
+                res.status(status).send({code, msg, data, total})
+            } else {
+                res.status(status).send({code, msg, data})
+            }
         } else {
             throw new Error('send函数传参必须传response对象')
         }
