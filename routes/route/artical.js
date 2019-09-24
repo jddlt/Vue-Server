@@ -10,7 +10,7 @@ module.exports = function (app) {
         articalModel.create({
             title,
             content,
-            likes: 0,
+            likes: [],
             answer: [],
             collect: 0,
             id: app.get('_id'),
@@ -47,8 +47,54 @@ module.exports = function (app) {
         })
     })
 
+    // 点赞帖子
+    app.get('/artical/like', async (req, res) => {
+        const { id, is_like } = req.query
+        const userId = app.get('_id')
+        if(String(is_like) == 'true') {
+            const promise_one = new Promise((resolve, reject) => {
+                articalModel.updateOne({_id: id}, {
+                    $push: {
+                        likes: userId
+                    },
+                    $inc: {collect: 1}
+                }, 
+                (err, meg) => {
+                    if (err) {
+                        reject(err)
+                    }
+                    resolve
+                    // mySend(res, { msg: '点赞成功' })
+                })
+            })
+
+            userModel.updateOne({_id: userId}, {
+                $inc: {like: 1}
+            }, 
+            (err, meg) => {
+                if (err) {
+                    throw err
+                }
+            })
+        } else {
+            articalModel.updateOne({_id: id}, {
+                $pull: {
+                    likes: userId
+                },
+                $inc: {collect: -1}
+            }, 
+            (err, meg) => {
+                if (err) {
+                    myError(res, err)
+                    return
+                }
+                mySend(res, { msg: '取消点赞成功' })
+            })
+        }
+    })
+
     app.get('/artical/sort', async (req, res) => {
-        articalModel.find({}).limit(9).sort({ '_id': -1 }).exec((err, msg) => {
+        articalModel.find({}).limit(9).sort({ 'collect': 1 }).exec((err, msg) => {
             if (err) {
                 myError(res, err)
                 return

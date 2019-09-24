@@ -6,6 +6,9 @@ exports.mySend = function (res, option) {
             code = code ? code : 200;
             data = data ? data : {};
             msg = msg ? msg : '';
+            if(data.password) {
+                delete data.password
+            }
             if (total) {
                 res.status(status).send({code, msg, data, total})
             } else {

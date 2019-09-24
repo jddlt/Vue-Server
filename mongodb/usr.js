@@ -13,6 +13,10 @@ let UserSchema = new mongoose.Schema({
   sex: String,
   label: String,
   tips: String,
+  like: {
+    type: Number,
+    default: 0
+  },
   avatar: {
     type: String,
     default: ''
@@ -29,7 +33,7 @@ let ArticalSchema = new mongoose.Schema({
   content: String,
   author: Object,
   id: String,
-  likes: Number,
+  likes: Array,
   collect: Number,
   answer: Array,
   create_time: String
