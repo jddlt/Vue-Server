@@ -34,9 +34,9 @@ module.exports = function (app) {
                 return
             }
             articalModel.find({})
-                .skip(10 * ((pageIndex ? pageIndex : 1) - 1))
-                .limit(10)
+                .skip(5 * ((pageIndex ? pageIndex : 1) - 1))
                 .sort({ '_id': -1 })
+                .limit(5)
                 .exec((err, msg) => {
                     if (err) {
                         myError(res, err)
@@ -63,38 +63,75 @@ module.exports = function (app) {
                     if (err) {
                         reject(err)
                     }
-                    resolve
+                    resolve()
                     // mySend(res, { msg: '点赞成功' })
                 })
             })
+            const promise_two = new Promise((resolve, reject) => {
+                articalModel.findOne({_id: id}, (err, msg) => {
+                    if(err) {
+                        reject(err)
+                    }
+                    userModel.updateOne({_id: msg.id}, {
+                        $inc: {like: 1}
+                    }, 
+                    (err, meg) => {
+                        if (err) {
+                            reject(err)
+                        }
+                        resolve()
+                    })
+                })
 
-            userModel.updateOne({_id: userId}, {
-                $inc: {like: 1}
-            }, 
-            (err, meg) => {
-                if (err) {
-                    throw err
-                }
+            })
+            Promise.all([promise_one, promise_two]).then(() => {
+                mySend(res, { msg: '点赞成功' })
+            }).catch(err => {
+                myError(res, err)
             })
         } else {
-            articalModel.updateOne({_id: id}, {
-                $pull: {
-                    likes: userId
-                },
-                $inc: {collect: -1}
-            }, 
-            (err, meg) => {
-                if (err) {
-                    myError(res, err)
-                    return
-                }
+            const promise_one = new Promise((resolve, reject) => {
+                articalModel.updateOne({_id: id}, {
+                    $pull: {
+                        likes: userId
+                    },
+                    $inc: {collect: -1}
+                }, 
+                (err, meg) => {
+                    if (err) {
+                        reject(err)
+                    }
+                    resolve()
+                    // mySend(res, { msg: '点赞成功' })
+                })
+            })
+            const promise_two = new Promise((resolve, reject) => {
+                articalModel.findOne({_id: id}, (err, msg) => {
+                    if(err) {
+                        reject(err)
+                    }
+                    userModel.updateOne({_id: msg.id}, {
+                        $inc: {like: -1}
+                    }, 
+                    (err, meg) => {
+                        if (err) {
+                            reject(err)
+                        }
+                        resolve()
+                    })
+                })
+            })
+            Promise.all([promise_one, promise_two]).then(() => {
                 mySend(res, { msg: '取消点赞成功' })
+            }).catch(err => {
+                myError(res, err)
             })
         }
     })
 
+    // 获取帖子排行
     app.get('/artical/sort', async (req, res) => {
-        articalModel.find({}).limit(9).sort({ 'collect': 1 }).exec((err, msg) => {
+        articalModel.find({}).sort({ 'looks': -1 }).limit(9).exec((err, msg) => {
             if (err) {
                 myError(res, err)
                 return
@@ -106,13 +143,37 @@ module.exports = function (app) {
     // 获取帖子详情
     app.get('/artical/detail', async (req, res) => {
         const { _id } = req.query;
-        articalModel.findOne({ _id }, (err, msg) => {
-            if (err) {
-                myError(res, err)
-                return
-            }
-            mySend(res, { msg: '评论成功', data: msg })
-        });
+        const promise_one = new Promise((resolve, reject) => {
+            articalModel.findOne({ _id }, (err, msgD) => {
+                if (err) {
+                    reject(err)
+                }
+                userModel.updateOne({ _id: msgD.id},{
+                    $inc: {looks: 1}
+                }, (err, msg) => {
+                    if (err) {
+                        reject(err)
+                    }
+                    resolve(msgD)
+                });
+            });
+        })
+        const promise_two = new Promise((resolve, reject) => {
+            articalModel.updateOne({_id}, {
+                $inc: {looks: 1}
+            }, (err, msg) => {
+                if(err) {
+                    reject(err)
+                } 
+                resolve()
+            })
+        })
+        Promise.all([promise_one, promise_two]).then((sres) => {
+          mySend(res, { msg: '获取成功', data: sres[0] })
+        }).catch(err => {
+          myError(res, err)
+        })
+        
     })
 
     // 回复帖子

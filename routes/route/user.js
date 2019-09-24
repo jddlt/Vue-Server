@@ -25,7 +25,12 @@ module.exports = function (app) {
               } else {
                 if(msg.length) {
                   app.set('userInfo', {...msg[0]._doc})
-                  mySend(res, { data: { ...msg[0]._doc }, msg: '获取成功' })
+                  articalModel.countDocuments({id: decode.id}, (err, count) => {
+                    if(err) {
+                      myError(res, err)
+                    }
+                    mySend(res, { data: { ...msg[0]._doc, artical_num: count }, msg: '获取成功' })
+                  })
                 } else {
                   mySend(res, { msg: '该用户不存在', code: 200 })
                 }

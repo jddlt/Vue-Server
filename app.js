@@ -60,7 +60,6 @@ app.use(async function (req, res, next) {
                 myError(res, err)
                 return
               }
-              console.log('res', res);
               app.set('userInfo', res) 
               next();
             })
