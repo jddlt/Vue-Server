@@ -7,11 +7,12 @@ const { mySend, myError } = require('./util/send')
 const { userModel, articalModel } = require('./mongodb/usr')
 const routs = require('./routes')
 const history = require('connect-history-api-fallback');
+const compression = require('compression')
  
 
 // app.use(express.static(path.resolve(__dirname, './dist')));
 // app.use(history());
-
+app.use(compression());
 
 const notNeedLoginPath = ['/zx/login', '/zx/addUser', '/zx/userInfo', '/zx/artical', '/zx/artical/sort', '/zx/artical/detail']
 
