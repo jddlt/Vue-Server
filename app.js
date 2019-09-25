@@ -6,9 +6,11 @@ const jwt = require("jsonwebtoken");
 const { mySend, myError } = require('./util/send')
 const { userModel, articalModel } = require('./mongodb/usr')
 const routs = require('./routes')
-
+const history = require('connect-history-api-fallback');
+ 
 
 app.use(express.static(path.resolve(__dirname, './dist')));
+app.use(history({ verbose: true, index: '/'}));
 
 
 const notNeedLoginPath = ['/login', '/addUser', '/userInfo', '/artical', '/artical/sort', '/artical/detail']
