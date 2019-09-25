@@ -9,7 +9,7 @@ module.exports = function (app) {
   const host = app.get('host')
 
   // 获取用户信息
-  app.get('/userInfo', async (req, res) => {
+  app.get('/zx/userInfo', async (req, res) => {
     const params = req.query;
     if (params.token) {
       jwt.verify(params.token, app.get('secret'), (err, decode) => {
@@ -48,7 +48,7 @@ module.exports = function (app) {
   })
   
   // 登录
-  app.post('/login', async (req, res) => {
+  app.post('/zx/login', async (req, res) => {
     const params = app.get('params')
     userModel.find({
       emil: params.emil
@@ -73,7 +73,7 @@ module.exports = function (app) {
   })
 
   // 编辑用户信息
-  app.post('/editUserInfo', async (req, res) => {
+  app.post('/zx/editUserInfo', async (req, res) => {
     // const params = app.get('params')
     const { name, emil, sex, label, tips, _id } = app.get('params')
     userModel.updateOne({_id}, {'$set': { 
@@ -92,7 +92,7 @@ module.exports = function (app) {
   })
   
   // 注册
-  app.post('/addUser', async (req, res) => {
+  app.post('/zx/addUser', async (req, res) => {
     const params = app.get('params')
     const findName = new Promise((resolve, reject) => {
       userModel.find({

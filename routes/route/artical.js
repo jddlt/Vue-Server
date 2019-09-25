@@ -5,7 +5,7 @@ const { mySend, myError } = require('../../util/send')
 module.exports = function (app) {
 
     // 发帖子接口
-    app.post('/artical/sendArtical', async (req, res) => {
+    app.post('/zx/artical/sendArtical', async (req, res) => {
         const { title, content, author } = app.get('params');
         articalModel.create({
             title,
@@ -26,7 +26,7 @@ module.exports = function (app) {
     })
 
     // 获取帖子
-    app.get('/artical', async (req, res) => {
+    app.get('/zx/artical', async (req, res) => {
         const { pageIndex } = req.query;
         articalModel.countDocuments({}, (err, count) => {
             if (err) {
@@ -48,7 +48,7 @@ module.exports = function (app) {
     })
 
     // 点赞帖子
-    app.get('/artical/like', async (req, res) => {
+    app.get('/zx/artical/like', async (req, res) => {
         const { id, is_like } = req.query
         const userId = app.get('_id')
         if(String(is_like) == 'true') {
@@ -130,7 +130,7 @@ module.exports = function (app) {
     })
 
     // 获取帖子排行
-    app.get('/artical/sort', async (req, res) => {
+    app.get('/zx/artical/sort', async (req, res) => {
         articalModel.find({}).sort({ 'looks': -1 }).limit(9).exec((err, msg) => {
             if (err) {
                 myError(res, err)
@@ -141,7 +141,7 @@ module.exports = function (app) {
     })
 
     // 获取帖子详情
-    app.get('/artical/detail', async (req, res) => {
+    app.get('/zx/artical/detail', async (req, res) => {
         const { _id } = req.query;
         const promise_one = new Promise((resolve, reject) => {
             articalModel.findOne({ _id }, (err, msgD) => {
@@ -177,7 +177,7 @@ module.exports = function (app) {
     })
 
     // 回复帖子
-    app.get('/artical/reply', async (req, res) => {
+    app.get('/zx/artical/reply', async (req, res) => {
         const { _id, content } = req.query;
         articalModel.updateOne({ _id }, {
             '$push': {

@@ -9,7 +9,7 @@ const { userModel, articalModel } = require('../../mongodb/usr')
 
 module.exports = function (app) {
   const host = app.get('host')
-  app.post('/upload',  async function ( req, res, next ) {
+  app.post('/zx/upload',  async function ( req, res, next ) {
     const _id = app.get('_id')
     const params = app.get('params')
     userModel.updateOne({_id}, {'$set': { 'avatar': (host + params.key) }},  (err, msg) => {
