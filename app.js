@@ -9,11 +9,11 @@ const routs = require('./routes')
 const history = require('connect-history-api-fallback');
  
 
-app.use(express.static(path.resolve(__dirname, './dist')));
-app.use(history());
+// app.use(express.static(path.resolve(__dirname, './dist')));
+// app.use(history());
 
 
-const notNeedLoginPath = ['/login', '/addUser', '/userInfo', '/artical', '/artical/sort', '/artical/detail']
+const notNeedLoginPath = ['/zx/login', '/zx/addUser', '/zx/userInfo', '/zx/artical', '/zx/artical/sort', '/zx/artical/detail']
 
 app.listen(3000, () => {
   console.log('服务器启动成功');
