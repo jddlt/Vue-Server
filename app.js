@@ -10,7 +10,7 @@ const history = require('connect-history-api-fallback');
  
 
 app.use(express.static(path.resolve(__dirname, './dist')));
-app.use(history({ verbose: true, index: './dist'}));
+// app.use(history({ verbose: true, index: './dist'}));
 
 
 const notNeedLoginPath = ['/login', '/addUser', '/userInfo', '/artical', '/artical/sort', '/artical/detail']
