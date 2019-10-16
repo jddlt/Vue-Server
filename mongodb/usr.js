@@ -41,7 +41,8 @@ let ArticalSchema = new mongoose.Schema({
   collect: Number,
   looks: Number,
   answer: Array,
-  create_time: String
+  create_time: String,
+  type: String
 });
 
 

@@ -128,7 +128,7 @@ module.exports = function (app) {
             })
         }
     })
-
+    
     // 获取帖子排行
     app.get('/zx/artical/sort', async (req, res) => {
         articalModel.find({}).sort({ 'looks': -1 }).limit(9).exec((err, msg) => {
@@ -137,6 +137,105 @@ module.exports = function (app) {
                 return
             }
             mySend(res, { msg: '获取成功', data: msg })
+        })
+    })
+
+    // 获取帖子分类数量
+    app.get('/zx/artical/typeNum', async (req, res) => {
+        const typeList = ['All', 'Talk', 'Javascript', 'Vue', 'React', 'Webpack', 'Markdown', 'Jquery', 'Node', 'Python', 'Css']
+        const All = new Promise((resolve, reject) => {
+            articalModel.countDocuments({}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: '全部', count})
+            })
+        })
+        const Talk = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: '闲聊'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: '闲聊', count})
+            })
+        })
+        const Javascript = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: 'Javascript'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: 'Javascript', count})
+            })
+        })
+        const Vue = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: 'Vue'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: 'Vue', count})
+            })
+        })
+        const React = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: 'React'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: 'React', count})
+            })
+        })
+        const Markdown = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: 'Markdown'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: 'Markdown', count})
+            })
+        })
+        const Webpack = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: 'Webpack'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: 'Webpack', count})
+            })
+        })
+        const Jquery = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: 'Jquery'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: 'Jquery', count})
+            })
+        })
+        const Node = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: 'Node'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: 'Node', count})
+            })
+        })
+        const Python = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: 'Python'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: 'Python', count})
+            })
+        })
+        const Css = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: 'Css'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: 'Css', count})
+            })
+        })
+        Promise.all([All, Javascript, Vue, React, Webpack, Markdown, Jquery, Node, Python, Css, Talk]).then(ress => {
+            const lostArr = ress.filter(item => {return item.count > 0})
+            mySend(res, {data: lostArr, msg: '获取成功'})
+        }).catch(err => {
+            myError(res, err)
         })
     })
 
