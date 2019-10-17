@@ -42,7 +42,8 @@ let ArticalSchema = new mongoose.Schema({
   looks: Number,
   answer: Array,
   create_time: String,
-  type: String
+  type: String,
+  personal: String  // 原创转载
 });
 
 

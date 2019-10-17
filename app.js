@@ -14,7 +14,7 @@ const compression = require('compression')
 // app.use(history());
 app.use(compression());
 
-const notNeedLoginPath = ['/zx/login', '/zx/addUser', '/zx/userInfo', '/zx/artical', '/zx/artical/sort', '/zx/artical/detail']
+const notNeedLoginPath = ['/zx/login', '/zx/addUser', '/zx/userInfo', '/zx/artical', '/zx/artical/sort', '/zx/artical/detail', '/zx/artical/typeNum']
 
 app.listen(3000, () => {
   console.log('服务器启动成功');

@@ -6,7 +6,7 @@ module.exports = function (app) {
 
     // 发帖子接口
     app.post('/zx/artical/sendArtical', async (req, res) => {
-        const { title, content, author } = app.get('params');
+        const { title, content, author, type, personal } = app.get('params');
         articalModel.create({
             title,
             content,
@@ -15,7 +15,9 @@ module.exports = function (app) {
             collect: 0,
             id: app.get('_id'),
             create_time: new Date().getTime(),
-            author: JSON.parse(author)
+            author: JSON.parse(author),
+            type,
+            personal
         }, err => {
             if (err) {
                 myError(res, err)
@@ -27,24 +29,44 @@ module.exports = function (app) {
 
     // 获取帖子
     app.get('/zx/artical', async (req, res) => {
-        const { pageIndex } = req.query;
-        articalModel.countDocuments({}, (err, count) => {
-            if (err) {
-                myError(res, err)
-                return
-            }
-            articalModel.find({})
-                .skip(5 * ((pageIndex ? pageIndex : 1) - 1))
-                .sort({ '_id': -1 })
-                .limit(5)
-                .exec((err, msg) => {
-                    if (err) {
-                        myError(res, err)
-                        return
-                    }
-                    mySend(res, { msg: '获取成功', data: msg, total: count })
-                })
-        })
+        const { pageIndex, type } = req.query;
+        if(type) {
+            articalModel.countDocuments({}, (err, count) => {
+                if (err) {
+                    myError(res, err)
+                    return
+                }
+                articalModel.find({type})
+                    .skip(5 * ((pageIndex ? pageIndex : 1) - 1))
+                    .sort({ '_id': -1 })
+                    .limit(5)
+                    .exec((err, msg) => {
+                        if (err) {
+                            myError(res, err)
+                            return
+                        }
+                        mySend(res, { msg: '获取成功', data: msg, total: count })
+                    })
+            })
+        } else {
+            articalModel.countDocuments({}, (err, count) => {
+                if (err) {
+                    myError(res, err)
+                    return
+                }
+                articalModel.find({})
+                    .skip(5 * ((pageIndex ? pageIndex : 1) - 1))
+                    .sort({ '_id': -1 })
+                    .limit(5)
+                    .exec((err, msg) => {
+                        if (err) {
+                            myError(res, err)
+                            return
+                        }
+                        mySend(res, { msg: '获取成功', data: msg, total: count })
+                    })
+            })
+        }
     })
 
     // 点赞帖子
@@ -142,7 +164,7 @@ module.exports = function (app) {
 
     // 获取帖子分类数量
     app.get('/zx/artical/typeNum', async (req, res) => {
-        const typeList = ['All', 'Talk', 'Javascript', 'Vue', 'React', 'Webpack', 'Markdown', 'Jquery', 'Node', 'Python', 'Css']
+        ['All', 'Talk', 'Javascript', 'Vue', 'React', 'Webpack', 'Markdown', 'Jquery', 'Node', 'Python', 'Css', 'Git']
         const All = new Promise((resolve, reject) => {
             articalModel.countDocuments({}, (err, count) => {
                 if (err) {
@@ -231,7 +253,15 @@ module.exports = function (app) {
                 resolve({name: 'Css', count})
             })
         })
-        Promise.all([All, Javascript, Vue, React, Webpack, Markdown, Jquery, Node, Python, Css, Talk]).then(ress => {
+        const Git = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: 'Git'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: 'Git', count})
+            })
+        })
+        Promise.all([All, Javascript, Vue, React, Webpack, Markdown, Jquery, Node, Python, Css, Talk, Git]).then(ress => {
             const lostArr = ress.filter(item => {return item.count > 0})
             mySend(res, {data: lostArr, msg: '获取成功'})
         }).catch(err => {
