@@ -30,7 +30,8 @@ let UserSchema = new mongoose.Schema({
     set(val) {
       return bcrypt.hashSync(val,12);
     }
-  }
+  },
+  message: Array
 });
 let ArticalSchema = new mongoose.Schema({
   title: String, 

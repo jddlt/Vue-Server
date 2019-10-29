@@ -164,7 +164,7 @@ module.exports = function (app) {
 
     // 获取帖子分类数量
     app.get('/zx/artical/typeNum', async (req, res) => {
-        ['All', 'Talk', 'Javascript', 'Vue', 'React', 'Webpack', 'Markdown', 'Jquery', 'Node', 'Python', 'Css', 'Git']
+        ['All', 'Talk', 'Javascript', 'Vue', 'React', 'Typescript', 'Webpack', 'Markdown', 'Jquery', 'Node', 'Python', 'Css', 'Git']
         const All = new Promise((resolve, reject) => {
             articalModel.countDocuments({}, (err, count) => {
                 if (err) {
@@ -195,6 +195,14 @@ module.exports = function (app) {
                     reject()
                 }
                 resolve({name: 'Vue', count})
+            })
+        })
+        const Typescript = new Promise((resolve, reject) => {
+            articalModel.countDocuments({type: 'Typescript'}, (err, count) => {
+                if (err) {
+                    reject()
+                }
+                resolve({name: 'Typescript', count})
             })
         })
         const React = new Promise((resolve, reject) => {
@@ -261,7 +269,7 @@ module.exports = function (app) {
                 resolve({name: 'Git', count})
             })
         })
-        Promise.all([All, Javascript, Vue, React, Webpack, Markdown, Jquery, Node, Python, Css, Talk, Git]).then(ress => {
+        Promise.all([All, Javascript, Vue, React, Webpack, Typescript, Markdown, Jquery, Node, Python, Css, Talk, Git]).then(ress => {
             const lostArr = ress.filter(item => {return item.count > 0})
             mySend(res, {data: lostArr, msg: '获取成功'})
         }).catch(err => {
